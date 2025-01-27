@@ -1,5 +1,6 @@
 import React from 'react'
 import { posts } from '../data/posts'
+import { Link } from "react-router-dom";
 import classes from '../styles/Top.module.css'
 
 export default function Top() {
@@ -9,7 +10,7 @@ export default function Top() {
         {
           posts.map(post => (
             <li key={post.id} className={classes.listbox}>
-              <a href='#' className={classes.link}>
+              <Link to={'/report/' + post.id} className={classes.link}>
                 <div className={classes.posts}>
                   <div>
                     <div className={classes.post}>
@@ -18,6 +19,7 @@ export default function Top() {
                         {new Date(post.createdAt).toLocaleDateString()}
                       </small>
                       <div>
+
                         {/* カテゴリ用に繰り返し処理 */}
                         {post.categories.map((category) => {
                           return (
@@ -30,7 +32,7 @@ export default function Top() {
                     <p dangerouslySetInnerHTML={{ __html: post.content }} className={classes.postsContent}></p>{/* 直接HTMLを埋め込むためのプロパティ */}
                   </div>
                 </div>
-              </a>
+              </Link>
             </li>
           ))
         }
