@@ -6,8 +6,8 @@ import classes from '../styles/Top.module.css'
 export default function Report() {
   // useParamsでURLパラメータを取得。
   const { id } = useParams(); // { id }は<Route path="/report/:id" element={<Report />} />と一致
-  const [post, setPosts] = useState([]); // 「空の配列」
-  const [isLoading, setIsLoading] = useState(true); // 読み込み中用に準備。isLoadingの初期状態をtrueに設定
+  const [post, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   // APIでpostsを取得する処理をuseEffectで実行。
   useEffect(() => { //データを非同期に取得するため、最初のレンダリング時にはpostはまだnullかundefined
@@ -15,7 +15,7 @@ export default function Report() {
       const res = await fetch(`https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/posts/${id}`);
       const data = await res.json();
       setPosts(data.post);
-      setIsLoading(false); // データ取得後に読み込み中の状態を終了する
+      setIsLoading(false);
     }
 
     loadPosts();
@@ -27,7 +27,7 @@ export default function Report() {
   }
 
   // 記事がない場合
-  if (!post) return <div>記事が見つかりません。</div>; // この部分がないと、postがまだデータを取得できていない状態でレンダリングが進んでしまい、エラーが発生する
+  if (!post) return <div>記事が見つかりません。</div>;
 
   return (
     <div>
