@@ -54,7 +54,6 @@ export default function Top() {
   if (posts.length === 0) {
     return <div>記事が見つかりません</div>;
   }
-
   return (
     <div>
       <ul className={classes.list}>
@@ -78,9 +77,9 @@ export default function Top() {
                           );
                         })}
                       </div>
+                      <h1 className={classes.postsTitle}>{post.title}</h1>
+                      <p dangerouslySetInnerHTML={{ __html: post.content }} className={classes.postsContent}></p>{/* 直接HTMLを埋め込むためのプロパティ */}
                     </div>
-                    <h1 className={classes.postsTitle}>{post.title}</h1>
-                    <p dangerouslySetInnerHTML={{ __html: post.content }} className={classes.postsContent}></p>{/* 直接HTMLを埋め込むためのプロパティ */}
                   </div>
                 </div>
               </Link>
