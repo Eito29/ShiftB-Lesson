@@ -1,9 +1,10 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { posts } from '../data/posts'
 import { Link } from "react-router-dom";
 import classes from '../styles/Top.module.css'
 
-export default function Top() {
+export const Top =() => {
   return (
     <div>
       <ul className={classes.list}>
@@ -27,9 +28,9 @@ export default function Top() {
                           );
                         })}
                       </div>
+                      <h1 className={classes.postsTitle}>{post.title}</h1>
+                      <p dangerouslySetInnerHTML={{ __html: post.content }} className={classes.postsContent}></p>{/* 直接HTMLを埋め込むためのプロパティ */}
                     </div>
-                    <h1 className={classes.postsTitle}>{post.title}</h1>
-                    <p dangerouslySetInnerHTML={{ __html: post.content }} className={classes.postsContent}></p>{/* 直接HTMLを埋め込むためのプロパティ */}
                   </div>
                 </div>
               </Link>

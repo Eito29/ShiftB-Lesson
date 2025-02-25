@@ -1,12 +1,13 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import '../styles/Header.module.css'
 
-export default function Header() {
+export const Header =() => {
   return (
     <>
       <header>
-        <a href='/'>Blog</a>
-        <a href='/contact'>お問い合わせ</a>
+        <Link to="/">Blog</Link>
+        <Link to="/contact">お問い合わせ</Link>
       </header>
     </>
   )
