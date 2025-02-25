@@ -1,18 +1,20 @@
-import { Header } from "./components/Header"
-import { Top } from "./pages/Top"
-import { Detail } from './pages/Detail'
-import { Contact } from './pages/Contact'
-import { Routes, Route } from 'react-router-dom'
+import React from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; //指定コンポーネントに遷移するために追加（Top⇒リンククリック⇒Report）
+import Header from "./components/Header"
+import Top from "./pages/Top"
+import Report from './pages/Report';
+import './styles/Common.module.css'
 
 function App() {
   return (
     <>
       <Header />
-      <Routes>
-        <Route path="/" element={<Top />} />
-        <Route path="/posts/:id" element={<Detail />} /> {/* :idの「:」はプレースホルダ（動的パラメータ） idという変数がURLに含まれていることを意味する*/}
-        <Route path="/contact" element={<Contact />} /> {/* URLが/contactのときContactというコンポーネントを表示する */}
-      </Routes>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Top />} /> {/* Topページのルート */}
+          <Route path="/report/:id" element={<Report />} /> {/* Reportページのルート */}
+        </Routes>
+      </Router>
     </>
   );
 }
