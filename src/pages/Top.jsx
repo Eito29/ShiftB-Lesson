@@ -3,62 +3,70 @@ import { useEffect, useState } from 'react'
 import { Link } from "react-router-dom"
 import classes from '../styles/Top.module.css'
 
+// 解説
+// APIデータを入れる為のfatcher関数を用意
+// asyncで非同期処理（待つ処理）にする
+// res(API取得のfetch()が返すResponseオブジェクトの略称)にデータを受信
+// data関数にresで取得したデータをJSON形式に変換して保存
+// stateに保存
+
 export default function Top() {
   const [posts, setPosts] = useState([]);
+  const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null); // エラーメッセージ用の状態
 
-  // APIでpostsを取得する処理をuseEffectで実行します。
   useEffect(() => {
-    const loadPosts = async () => {
-      // try エラーが発生する可能性のあるコード
-      // catch エラーが発生した場合の処理
-      // finally 必ず実行したい処理
+    const fetcher = async () => {
       try {
-        // １．データ取得開始
-        const res = await fetch("https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/posts/");
+        // １．データ取得（エラーが起こるかもしれない処理）
+        // fetch(...)でデータを取得、awaitで「データが返ってくるまで待つ」、それをres関数に入れ込む
+        const res = await fetch("https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/posts")
 
         // ２．レスポンスが正常でない場合はエラーを投げる　→　catchへ
-        if (!res.ok) { //okはプロパティ名。レスポンスがエラーの場合にエラー処理
+        if (!res.ok) {
+          // 「Error という組み込みのコンストラクタ関数を使って、新しいエラーオブジェクトを作る」という意味
+          // throw「作成したエラーを投げて、プログラムの流れを止める」
           throw new Error("データの取得に失敗しました");
         }
 
         // ３．正常にデータを取得し、stateに保存
+        // awaitで読み込み完了まで待ち、res.json()でJSON形式のデータとして読み込み、data関数に入れ込む
         const data = await res.json();
+        // stateに保存
         setPosts(data.posts);
 
       } catch (error) {
-        // ４．取得エラーの場合
-        setError(error.message); // error.messageでエラーメッセージを設定「Failed to fetch」
-        setPosts([]); // 空の配列をセット
-        console.error(error); // (error)はthrow new Error("データの取得に失敗しました");を表示　※本番環境ではconsole.errorは使用しない方がよい。
+        // ４．エラーが起きたときの処理
+        // (error)にはJSのErrorオブジェクトとしてerror.messageがあるのでそれをsetErrorに保存
+        setError(error.message);
+        // 古いデータや誤ったデータを表示しないために空にする
+        setPosts([]);
+        // console確認用
+        console.error(error);
       } finally {
-        setIsLoading(false); // データ取得後に読み込みを終了する
+        // ５．成功しても失敗しても実行される処理（ローディング終了）
+        setIsLoading(false);
       }
     }
 
-    loadPosts();
+    fetcher();
   }, []) //[]空でレンダリング時に一度だけ処理を発火
 
-  // 読み込み中
   if (isLoading) {
     return <div>読み込み中です。しばらくお待ちください。</div>;
   }
-
-  // エラーが発生した場合
   if (error) {
-    return <div>{error}</div>; // データの取得に失敗しましたを表示
+    return <div>{error}</div>;
   }
-
-  // postsが空の場合
   if (posts.length === 0) {
     return <div>記事が見つかりません</div>;
   }
+
   return (
     <div>
       <ul className={classes.list}>
         {
-          posts.map(post => ( // (post)でもよい。複数の場合は(post1, post2)など
+          posts.map(post => (
             <li key={post.id} className={classes.listbox}>
               <Link to={'/report/' + post.id} className={classes.link}>
                 <div className={classes.posts}>
@@ -69,7 +77,6 @@ export default function Top() {
                         {new Date(post.createdAt).toLocaleDateString()}
                       </small>
                       <div>
-
                         {/* カテゴリ用に繰り返し処理 */}
                         {post.categories.map((category) => {
                           return (
@@ -77,9 +84,11 @@ export default function Top() {
                           );
                         })}
                       </div>
-                      <h1 className={classes.postsTitle}>{post.title}</h1>
-                      <p dangerouslySetInnerHTML={{ __html: post.content }} className={classes.postsContent}></p>{/* 直接HTMLを埋め込むためのプロパティ */}
                     </div>
+                    <h1 className={classes.postsTitle}>{post.title}</h1>
+
+                    {/* 直接HTMLを埋め込むためのプロパティ */}
+                    <p dangerouslySetInnerHTML={{ __html: post.content }} className={classes.postsContent}></p>
                   </div>
                 </div>
               </Link>
